@@ -20,7 +20,7 @@ public class MaximizeWidgets implements IXposedHookLoadPackage {
 	public void handleLoadPackage(LoadPackageParam lpparam) throws Throwable {
 		if (!lpparam.packageName.equals("android"))
 			return;
-		
+
 		String packageName;
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
 			packageName = "com.android.keyguard";
