@@ -20,8 +20,15 @@ public class MaximizeWidgets implements IXposedHookLoadPackage {
 	public void handleLoadPackage(LoadPackageParam lpparam) throws Throwable {
 		if (!lpparam.packageName.equals("android"))
 			return;
+		
+		String packageName;
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+			packageName = "com.android.keyguard";
+		} else {
+			packageName = "com.android.internal.policy.impl.keyguard";
+		}
 
-		Class<?> KeyguardHostView = findClass("com.android.internal.policy.impl.keyguard.KeyguardHostView", lpparam.classLoader);
+		Class<?> KeyguardHostView = findClass(packageName + ".KeyguardHostView", lpparam.classLoader);
 
 		XposedHelpers.findAndHookMethod(KeyguardHostView, "onFinishInflate", new XC_MethodHook() {
 			@Override
@@ -39,7 +46,7 @@ public class MaximizeWidgets implements IXposedHookLoadPackage {
 			}
 		});
 
-		findAndHookMethod("com.android.internal.policy.impl.keyguard.SlidingChallengeLayout", lpparam.classLoader, "onMeasure", int.class, int.class, new XC_MethodHook() {
+		findAndHookMethod(packageName + ".SlidingChallengeLayout", lpparam.classLoader, "onMeasure", int.class, int.class, new XC_MethodHook() {
 			@Override
 			protected void afterHookedMethod(final MethodHookParam param) throws Throwable {
 				try {
